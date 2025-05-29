@@ -21,4 +21,6 @@
     __functor = _: (import ./libs inputs);
     meta.description = "Frappix additional libs and native binaries";
   };
+
+  pkgs = {};
 }
