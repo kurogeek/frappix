@@ -47,6 +47,7 @@
       frapper = import ./std/frapper.nix {inherit inputs;};
       nvchecker = import ./std/nvchecker.nix {inherit inputs;};
       templates = std.pick self ["examples" "templates"];
+      self = inputs.self;
     };
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/release-24.11";

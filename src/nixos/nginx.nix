@@ -103,7 +103,7 @@ in {
           # Inspired by https://github.com/frappe/press/blob/master/nginx.conf
           locations = let
             assets = cacheControl: {
-              root = "${cfg.combinedAssets}/share/sites/";
+              root = "${pkgs.mkSiteAssets cfg.apps}/share/sites/";
               tryFiles = "$uri =404";
               extraConfig = ''
                 ${cacheControl}
