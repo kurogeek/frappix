@@ -64,6 +64,8 @@ in
       "REJSON=0"
     ];
 
+    cmakeFlags = ["-DCMAKE_POLICY_VERSION_MINIMUM=3.5"];
+
     nativeBuildInputs = [
       cmake
       git

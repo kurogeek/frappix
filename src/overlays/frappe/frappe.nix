@@ -17,14 +17,14 @@ buildPythonPackage rec {
     format
     ;
 
-  src = mkAssets appSources.frappe;
+  src = (mkAssets appSources.frappe);
   passthru =
     appSources.frappe.passthru
     // {
       packages = with pkgs; [
         mariadb
         restic
-        wkhtmltopdf-bin
+        wkhtmltopdf
         which # pdfkit detects wkhtmltopdf this way
         gzip # for manual backups from the frappe ui
         bash
@@ -213,6 +213,15 @@ buildPythonPackage rec {
     "psutil"
     # - tenacity~=8.2.2 not satisfied by version 9.0.0
     "tenacity"
+    "click"
+    "pypika"
+    "werkzeug"
+    "beautifulsoup4"
+    "markdown2"
+    "oauthlib"
+    "passlib"
+    "tomli"
+    "zxcvbn"
   ];
 
   pythonRemoveDeps = [

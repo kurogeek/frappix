@@ -32,7 +32,6 @@ A: (1) dotfile proliferation
     packages = [
       inputs.nixpkgs.alejandra
       inputs.nixpkgs.nodePackages.prettier
-      inputs.nixpkgs.nodePackages.prettier-plugin-toml
       inputs.nixpkgs.shfmt
     ];
     data = {
@@ -45,8 +44,6 @@ A: (1) dotfile proliferation
         prettier = {
           command = "prettier";
           options = [
-            "--plugin"
-            "${inputs.nixpkgs.nodePackages.prettier-plugin-toml}/lib/node_modules/prettier-plugin-toml/lib/index.js"
             "--write"
           ];
           includes = [

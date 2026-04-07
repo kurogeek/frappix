@@ -1,6 +1,6 @@
 let
   inherit (builtins) readDir;
-  inherit (inputs.nixpkgs) lib applyPatches substituteAll;
+  inherit (inputs.nixpkgs) lib applyPatches replaceVars;
 
   fileIsNix = basename: type: type == "regular" && lib.hasSuffix ".nix" basename;
 
@@ -31,8 +31,7 @@ let
           patches = [
             # make the relative path to the generator script absolute
             # but reference the already patched version to work with uds
-            (substituteAll {
-              src = ./sources/frappe-website-generator.patch;
+            (replaceVars ./sources/frappe-website-generator.patch {
               frappe = workdirsrc;
             })
           ];

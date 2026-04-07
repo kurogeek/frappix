@@ -79,7 +79,6 @@ in {
       pidfile = "$PRJ_RUNTIME_DIR/redis_queue.pid";
       bind = "127.0.0.1";
       port = "11311";
-      loadmodule = "${pkgs.redi-search}/lib/redisearch.so";
     };
     engine = redisEngine;
   };
@@ -97,7 +96,6 @@ in {
       maxmemory = "794mb";
       maxmemory-policy = "allkeys-lru";
       appendonly = "no";
-      loadmodule = "${pkgs.redi-search}/lib/redisearch.so";
 
       save = "";
     };

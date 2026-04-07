@@ -44,6 +44,8 @@ buildPythonPackage rec {
     "rapidfuzz"
     # - python-youtube~=0.8.0 not satisfied by version 0.9.4
     "python-youtube"
+    "unidecode"
+    "pypng"
   ];
 
   # would require frappe, but since frappe is almost certainly customized,
