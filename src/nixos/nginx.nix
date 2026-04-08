@@ -23,7 +23,7 @@ in {
         else {}
       )
       // {
-        package = pkgs.nginxQuic; # provides http3
+        package = pkgs.nginx; # provides http3
         enable = true;
         recommendedTlsSettings = true;
         recommendedOptimisation = true;
