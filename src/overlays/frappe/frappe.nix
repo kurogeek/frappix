@@ -104,7 +104,7 @@ buildPythonPackage rec {
       requests
       requests-oauthlib
       restrictedpython
-      rq
+      rq_1
       rsa
       semantic-version
       sqlparse

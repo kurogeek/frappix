@@ -7,6 +7,7 @@ pyFinal: pyPrev: {
   sql_metadata = pyFinal.callPackage ./sql_metadata.nix {};
   premailer = pyFinal.callPackage ./premailer.nix {}; # not anymore in nixpkgs, see: https://github.com/NixOS/nixpkgs/pull/348580
   rauth = pyFinal.callPackage ./rauth.nix {}; # not anymore in nixpkgs, see: https://github.com/NixOS/nixpkgs/pull/330417
+  rq_1 = pyFinal.callPackage ./rq.nix {};
 
   # erpnext dependencies
   plaid-python = pyFinal.callPackage ./plaid-python.nix {}; # old version
