@@ -7,6 +7,7 @@
   python,
   extractFrappeMeta,
   mkAssets,
+  frappe,
 }:
 buildPythonPackage rec {
   inherit
@@ -48,9 +49,9 @@ buildPythonPackage rec {
     "pypng"
   ];
 
-  # would require frappe, but since frappe is almost certainly customized,
-  # we don't include it here / TODO: decide if we may actually add it?
-  # pythonImportsCheck = ["erpnext"];
+  nativeCheckInputs = [frappe];
+
+  pythonImportsCheck = ["erpnext"];
 
   meta = with lib; {
     description = "Free and Open Source Enterprise Resource Planning (ERP";
