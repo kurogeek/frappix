@@ -200,7 +200,8 @@ in {
           # don't propagate restarts and stops
           requiredBy = ["${cfg.project}-setup-${site}.target"];
           wants = ["${cfg.project}-config.target"];
-          after = ["${cfg.project}-config.target"];
+          after = [ "${cfg.project}-config.target" "mysql.service" ];
+          requires = [ "mysql.service" ];
         };
       in
         (mapAttrs' (mkMaybeSiteMigrate args) cfg.sites) # either, if site directory exists
