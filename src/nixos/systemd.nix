@@ -352,6 +352,7 @@ in {
                 else
                   echo "All apps already installed."
                 fi
+                bench --site "${site}" migrate
               '';
           });
     in
