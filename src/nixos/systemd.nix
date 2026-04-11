@@ -104,7 +104,9 @@ in {
         "${cfg.project}-schedule" = {
           description = "${cfg.project}: frappe scheduler";
           inherit path environment requiredBy partOf wants after;
-          script = "bench frappe schedule";
+          script = ''
+            bench frappe schedule
+          '';
           serviceConfig = defaultServiceConfig;
         };
         "${cfg.project}-web" = {
@@ -136,7 +138,9 @@ in {
         "${cfg.project}-socketio" = {
           description = "${cfg.project}: frappe websocket";
           inherit path environment requiredBy partOf wants after;
-          script = "node ${cfg.package.src}/socketio.js";
+          script = ''
+            node ${cfg.package.src}/socketio.js
+          '';
           # No usefulness of socket if fronted stops or failes abnormally
           bindsTo = ["${cfg.project}-web.service"];
           serviceConfig =
