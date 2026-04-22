@@ -23,6 +23,7 @@
         --exclude '*/*.py' \
         $path/ $out/share/apps/$name
       # cp -r $path $out/share/apps/$name
+      echo "[+] $name : $path"
       echo "$name" >> $out/share/sites/apps.txt # used by esbuild to discover apps
       ls $out/share/apps/$name
     done < ${appsList}
