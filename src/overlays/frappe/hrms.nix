@@ -160,6 +160,12 @@ buildPythonPackage  {
       mkdir $out
       cp -R . $out
       cp -R ${hrms}/hrms/public/node_modules $out
+
+      cp -R ${hrms}/hrms/public/roster $out/hrms/public
+      cp -R ${hrms}/hrms/public/frontend $out/hrms/public
+
+      cp -R ${hrms}/hrms/www/hrms.html $out/hrms/www/
+      cp -R ${hrms}/hrms/www/roster.html $out/hrms/www/
     '';
   };
 
