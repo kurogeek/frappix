@@ -222,6 +222,7 @@ buildPythonPackage rec {
     "passlib"
     "tomli"
     "zxcvbn"
+    "tinycss2"
   ];
 
   pythonRemoveDeps = [
