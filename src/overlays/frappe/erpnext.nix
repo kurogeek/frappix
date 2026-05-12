@@ -17,7 +17,11 @@ buildPythonPackage rec {
     format
     ;
 
-  src = mkAssets appSources.erpnext;
+  src = mkAssets {
+    inherit (appSources.erpnext) pname version src;
+    yarnHash = "sha256-25VPD0K192AMYRmOHhMao6I3As/KW9LvulB/6zK2Wbk=";
+  };
+
   inherit (appSources.erpnext) passthru;
 
   nativeBuildInputs = [

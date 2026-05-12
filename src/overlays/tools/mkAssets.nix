@@ -1,63 +1,60 @@
 # adopted from: https://git.pub.solar/axeman/erpnext-nix/src/branch/main/node/mk-app.nix
 {
-  runCommand,
-  path,
   nodejs_20,
   yarn,
-  nodePackages,
-  emptyFile,
-  yarn2nix-moretea,
-  callPackage,
+  fetchYarnDeps,
+  yarnConfigHook,
+  yarnBuildHook,
   lib,
   stdenv,
+}: {
+  pname,
+  src,
+  version,
+  yarnHash,
+  ...
 }: let
-  inherit (yarn2nix-moretea) mkYarnNix;
-in
-  {
-    pname,
-    src,
-    version,
-    ...
-  }: let
-    yarnLock = "${src}/yarn.lock";
-    yarnOfflineCache =
-      (callPackage (mkYarnNix {
-        yarnLock =
-          if builtins.pathExists yarnLock
-          then yarnLock
-          else emptyFile;
-      }) {})
-      .offline_cache;
-    hasLock = builtins.pathExists yarnLock;
-    pjson = lib.importJSON (src + /package.json);
-    runBuild = pjson ? scripts && pjson.scripts ? build && pname != "frappe";
-  in
-    stdenv.mkDerivation {
-      pname = pname + "_";
-      inherit src version;
-      nativeBuildInputs = [
-        nodejs_20
-        (yarn.overrideAttrs {withNode = false;})
-        yarn2nix-moretea.fixup_yarn_lock
-      ];
-      configurePhase = ''
-        export HOME=$(mktemp -d)
-      '';
-      buildPhase =
-        lib.optionalString hasLock ''
-          yarn config --offline set yarn-offline-mirror ${yarnOfflineCache}
-          fixup_yarn_lock yarn.lock
-          yarn install --offline \
-            --frozen-lockfile \
-            --ignore-engines --ignore-scripts
-          patchShebangs .
-        ''
-        + lib.optionalString (hasLock && runBuild) ''
-          yarn --offline --frozen-lockfile --ignore-engines  build
-        '';
+  yarnLock = "${src}/yarn.lock";
+  hasLock = builtins.pathExists yarnLock;
+  pjson = lib.importJSON (src + /package.json);
+  runBuild = pjson ? scripts && pjson.scripts ? build && pname != "frappe";
 
-      installPhase = ''
-        mkdir -p $out
-        cp -R . $out
-      '';
-    }
+  offlineCache = lib.optionalAttrs hasLock (fetchYarnDeps {
+    inherit src;
+    hash = yarnHash; # populate with `nix-prefetch` or leave empty to get the hash error
+  });
+in
+  stdenv.mkDerivation {
+    pname = pname + "_";
+    inherit src version;
+
+    yarnOfflineCache = lib.optionalString hasLock offlineCache;
+
+    nativeBuildInputs =
+      lib.optionals hasLock [
+        yarnConfigHook
+      ]
+      ++ lib.optionals (hasLock && runBuild) [
+        yarnBuildHook
+      ]
+      ++ [
+        nodejs_20
+        yarn
+      ];
+
+    # yarnConfigHook replaces: yarn config set yarn-offline-mirror,
+    # fixup_yarn_lock, and yarn install --offline
+    # It sets HOME, points yarn at the offline cache, and runs yarn install.
+    # No configurePhase or buildPhase boilerplate needed for those steps.
+
+    # Only needed if runBuild is false but hasLock is true —
+    # yarnBuildHook runs `yarn build` automatically when included.
+    buildPhase = lib.optionalString (hasLock && !runBuild) ''
+      echo "Skipping yarn build for $pname"
+    '';
+
+    installPhase = ''
+      mkdir -p $out
+      cp -R . $out
+    '';
+  }
