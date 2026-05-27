@@ -9,7 +9,6 @@
   nodejs,
   python,
   fetchFromGitHub,
-  breakpointHook,
 }:
 let
   version = "15.30.0";
@@ -35,7 +34,6 @@ let
     nativeBuildInputs = [
       nodejs
       yarnConfigHook
-      breakpointHook
     ];
 
     patchPhase = ''
@@ -83,7 +81,6 @@ let
     nativeBuildInputs = [
       nodejs
       yarnConfigHook
-      breakpointHook
     ];
 
     dontBuild = true;
