@@ -9,6 +9,7 @@
   nodejs,
   python,
   fetchFromGitHub,
+  breakpointHook,
 }:
 let
   version = "15.30.0";
@@ -17,31 +18,37 @@ let
     owner = "defendicon";
     repo = "POS-Awesome-V15";
     tag = version;
-    hash = "";
+    hash = "sha256-oADxAloAQxGdJrANuSgy9nchA4Zuvyy3G0isGUzqeck=";
   };
 
   frontend = stdenv.mkDerivation (finalAttrs: {
-    pname = "pos-frontend";
+    pname = "posawesome-frontend";
     inherit version;
 
     src = "${src}/frontend";
 
     yarnOfflineCache = fetchYarnDeps {
       yarnLock = "${finalAttrs.src}/yarn.lock";
-      hash = "sha256-miHW6ix8EXrKp7dG1pBMfFs3l5r6jOYJveod6Cg15Ok=";
+      hash = "sha256-EPR9Wy7rd4ytnN762p8now1z0dF+4QmODosz/UkHjr4=";
     };
 
     nativeBuildInputs = [
       nodejs
       yarnConfigHook
+      breakpointHook
     ];
+
+    patchPhase = ''
+      cp ${src}/frappe-vue-style.js $TMP/frontend
+      cp ${src}/posawesome/public/css/rtl.css $TMP/frontend
+    '';
 
     buildPhase = ''
       runHook preBuild
 
-      substituteInPlace $TMP/frontend/vite.config.js --replace-fail "../ppd/public/frontend" out/public/frontend
-      substituteInPlace $TMP/frontend/package.json --replace-fail "../ppd/public/frontend" out/public/frontend
-      substituteInPlace $TMP/frontend/package.json --replace-fail "../ppd/www" out/public/www
+      substituteInPlace $TMP/frontend/vite.config.js --replace-fail "../posawesome/public" out/public
+      substituteInPlace $TMP/frontend/vite.config.js --replace-fail "../frappe-vue-style" "./frappe-vue-style"
+      substituteInPlace $TMP/frontend/src/posapp/posapp.ts --replace-fail "../../../posawesome/public/css/rtl.css" "../../rtl.css"
 
       runHook postBuild
     '';
@@ -61,8 +68,8 @@ let
     '';
   });
 
-  ppd = stdenv.mkDerivation (finalAttrs: {
-    pname = "ppd-assets";
+  posawesome = stdenv.mkDerivation (finalAttrs: {
+    pname = "posawesome-assets";
     inherit version;
 
     inherit src;
@@ -70,12 +77,13 @@ let
 
     yarnOfflineCache = fetchYarnDeps {
       yarnLock = "${finalAttrs.src}/yarn.lock";
-      hash = "sha256-miHW6ix8EXrKp7dG1pBMfFs3l5r6jOYJveod6Cg15Ok=";
+      hash = "sha256-AJowaeraNyzbtf9mM/eD4qnAs1+GorUZo66xVPNToYI=";
     };
 
     nativeBuildInputs = [
       nodejs
       yarnConfigHook
+      breakpointHook
     ];
 
     dontBuild = true;
@@ -83,17 +91,12 @@ let
     installPhase = ''
       runHook preInstall
 
-      mkdir -p $out/ppd/www
+      mkdir -p $out/posawesome/www
 
-      cp -R ppd/public $out/ppd
-      cp -R node_modules $out/ppd/public
+      cp -R posawesome/public $out/posawesome
+      cp -R node_modules $out/posawesome/public
 
-      # should as well just remove
-      ln -sf $out/ppd/public/node_modules/nanoid/bin/nanoid.cjs $out/ppd/public/node_modules/.bin/nanoid
-      rm $out/ppd/public/node_modules/.bin/autoprefixer
-
-      cp -R ${frontend}/public/frontend $out/ppd/public
-      cp -R ${frontend}/public/www/* $out/ppd/www
+      cp -R ${frontend}/public/frontend $out/posawesome/public
 
       runHook postInstall
     '';
@@ -102,22 +105,20 @@ let
 in
 buildPythonPackage  {
 
-  pname = "ppd";
+  pname = "posawesome";
   version = version;
   format = "pyproject";
 
   src = stdenv.mkDerivation {
-    pname = "ppd-main";
+    pname = "posawesome-src";
     inherit src version;
     installPhase = ''
-      mkdir -p $out/ppd/www
+      mkdir -p $out/posawesome/www
 
       cp -R . $out
-      cp -R ${ppd}/ppd/public/node_modules $out
+      cp -R ${posawesome}/posawesome/public/node_modules $out
 
-      cp -R ${ppd}/ppd/public/frontend $out/ppd/public
-
-      cp -R ${ppd}/ppd/www/ppd.html $out/ppd/www/
+      cp -R ${posawesome}/posawesome/public/frontend $out/posawesome/public
     '';
   };
 
@@ -129,8 +130,7 @@ buildPythonPackage  {
   postFixup = ''
     runHook preInstall
 
-    cp -R ${ppd}/ppd/public/* $out/${python.sitePackages}/ppd/public
-    cp -R ${ppd}/ppd/www/* $out/${python.sitePackages}/ppd/www
+    cp -R ${posawesome}/posawesome/public/* $out/${python.sitePackages}/posawesome/public
 
     runHook postInstall
   '';
