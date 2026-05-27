@@ -92,7 +92,7 @@ A: (1) dotfile proliferation
   mdbook = {
     # add preprocessor packages here
     packages = [
-      inputs.nixpkgs.mdbook-linkcheck
+      inputs.nixpkgs.mdbook-linkcheck2
     ];
     data = {
       # Configuration Reference: https://rust-lang.github.io/mdBook/format/configuration/index.html

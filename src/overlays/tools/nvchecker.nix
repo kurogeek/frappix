@@ -70,7 +70,7 @@ buildPythonPackage rec {
     "nvchecker"
   ];
 
-  pytestFlagsArray = [
+  pytestFlags = [
     "-m 'not needs_net'"
   ];
 
