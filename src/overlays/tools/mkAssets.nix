@@ -1,6 +1,6 @@
 # adopted from: https://git.pub.solar/axeman/erpnext-nix/src/branch/main/node/mk-app.nix
 {
-  nodejs_20,
+  nodejs,
   yarn,
   fetchYarnDeps,
   yarnConfigHook,
@@ -38,7 +38,7 @@ in
         yarnBuildHook
       ]
       ++ [
-        nodejs_20
+        nodejs
         yarn
       ];
 

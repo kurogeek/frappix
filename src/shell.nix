@@ -299,7 +299,7 @@ in {
           (devPackage pkgs.nvchecker-nix)
           (devPackage pkgs.apps)
           (devPackage pkgs.analyze-prs)
-          (devPackage pkgs.nodejs_20)
+          (devPackage pkgs.nodejs)
           (devPackage (pkgs.yarn.overrideAttrs {withNode = false;}))
         ];
       };
