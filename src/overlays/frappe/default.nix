@@ -23,5 +23,7 @@ in {
     wiki = callPackage ./wiki {};
     raven = callPackage ./raven {};
     drive = callPackage ./drive {};
+    pos-next = callPackage ./pos-next.nix {};
+    pos-awesome = callPackage ./pos-awesome.nix {};
   });
 }
