@@ -2,7 +2,6 @@
   lib,
   buildPythonPackage,
   fetchPypi,
-  isPy27,
   cssselect,
   cssutils,
   lxml,
@@ -14,7 +13,6 @@ buildPythonPackage rec {
   pname = "premailer";
   version = "3.10.0";
   format = "setuptools";
-  disabled = isPy27; # no longer compatible with urllib
 
   src = fetchPypi {
     inherit pname version;
