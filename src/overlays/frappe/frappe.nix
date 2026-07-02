@@ -19,7 +19,7 @@ buildPythonPackage rec {
 
   src = (mkAssets {
     inherit (appSources.frappe) pname src version;
-    yarnHash = "sha256-Hnp9NkIXrT+8iOZeNungJStak8kxOVitUieDsW/9w24=";
+    yarnHash = "sha256-+9+GTazz45h/hpeG18+64uYFsOLdpETg9k9PnYFcRKA=";
   });
 
   passthru =
