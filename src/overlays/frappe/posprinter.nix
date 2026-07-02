@@ -11,8 +11,8 @@ let
     domain = "git.b4l.co.th";
     owner = "newedge";
     repo = "posprinter";
-    rev = "7a3ca92d4c3c35623e7f2478914718b88b2bc279";
-    sha256 = "sha256-Bw8aFljctgb3b+KywwU0l22cGf2lOqvX6ompucemo1A=";
+    rev = "114828fca6dc87fb1d6704af40d144cc7d8d3ab6";
+    sha256 = "sha256-LqgmdhPhV2OpX+ko7Ab1YsQzEIbGloS3sPltQTKWEwU=";
   };
 in
 buildPythonPackage (finalAttrs: {
