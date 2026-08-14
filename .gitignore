@@ -1,6 +1,7 @@
 # nix
 result
 .nixos-test-history
+*.qcow2
 
 # nixago: ignore-linked-files
 /lefthook.yml
