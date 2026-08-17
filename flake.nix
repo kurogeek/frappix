@@ -8,7 +8,7 @@
   } @ inputs:
     std.growOn {
       inherit inputs;
-      cellsFrom = std.incl ./. ["src" "local" "apps" "examples" "tests"];
+      cellsFrom = std.incl ./. ["src" "local" "apps" "examples" "tests" "deployment-for-manual-testing"];
       cellBlocks = with std.blockTypes; [
         (data "templates")
 
@@ -23,6 +23,7 @@
         (anything "nixos")
         (anything "shell")
         (nixostests "nixos-tests")
+        (runnables "runnables")
         (microvms "vms")
         (runnables "jobs" // {cli = false;}) # for downstream use
 
