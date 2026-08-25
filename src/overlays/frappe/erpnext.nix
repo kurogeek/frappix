@@ -36,7 +36,8 @@ buildPythonPackage rec {
     plaid-python
     pycountry
     pypng
-    python-youtube
+    # temporary fix until https://github.com/NixOS/nixpkgs/pull/556318 is merged
+    (python-youtube.overrideAttrs { disabledTests = [ "test_parse_response" ]; })
     rapidfuzz
     tweepy
     unidecode
