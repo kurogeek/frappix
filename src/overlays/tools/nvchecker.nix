@@ -18,16 +18,16 @@
 }:
 buildPythonPackage rec {
   pname = "nvchecker";
-  version = "2.17dev-nix2";
+  version = "2.17";
   pyproject = true;
 
   disabled = pythonOlder "3.8";
 
   src = fetchFromGitHub {
-    owner = "blaggacao";
+    owner = "lilydjwg";
     repo = pname;
     rev = "v${version}";
-    hash = "sha256-EOOUS9k/YPe+Y6eaTLxwCuI0MDR/z4WvQ7ARAuU3Q+w=";
+    hash = "sha256-jA41WoD0WXdb8CM9dUchIAhYd4GoUA9zLYbkaPIScLg=";
   };
 
   nativeBuildInputs = [
