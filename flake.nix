@@ -67,6 +67,7 @@
     n2c.url = "github:nlewo/nix2container";
     # n2c.inputs.nixpkgs.follows = "nixpkgs";
     std.inputs = {
+      paisano.url = "github:paisano-nix/core";
       n2c.follows = "n2c";
       nixpkgs.follows = "nixpkgs";
       devshell.follows = "devshell";
