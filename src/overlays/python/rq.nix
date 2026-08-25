@@ -20,7 +20,7 @@
 
 buildPythonPackage rec {
   pname = "rq";
-  version = "1.6.2";
+  version = "1.16.2";
   pyproject = true;
 
   disabled = pythonOlder "3.7";
@@ -60,6 +60,13 @@ buildPythonPackage rec {
     "test_run_empty_queue"
     "test_run_scheduled_access_self"
     "test_handle_exception_handles_non_ascii_in_exception_message"
+    "test_worker_registration"
+    "test_worker_pool"
+    "test_worker"
+    "test_scheduler"
+    "test_job"
+    "test_fixtures"
+    "test_commands"
   ];
 
   pythonImportsCheck = [ "rq" ];
