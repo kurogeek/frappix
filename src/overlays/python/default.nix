@@ -3,7 +3,6 @@ pyFinal: pyPrev: {
   barcodenumber = pyFinal.callPackage ./barcodenumber.nix {};
   email-reply-parser = pyFinal.callPackage ./email-reply-parser.nix {};
   traceback-with-variables = pyFinal.callPackage ./traceback-with-variables {};
-  uuid-utils = pyFinal.callPackage ./uuid-utils.nix {};
   sql_metadata = pyFinal.callPackage ./sql_metadata.nix {};
   premailer = pyFinal.callPackage ./premailer.nix {}; # not anymore in nixpkgs, see: https://github.com/NixOS/nixpkgs/pull/348580
   rauth = pyFinal.callPackage ./rauth.nix {}; # not anymore in nixpkgs, see: https://github.com/NixOS/nixpkgs/pull/330417
