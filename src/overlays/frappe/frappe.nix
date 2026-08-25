@@ -19,7 +19,7 @@ buildPythonPackage rec {
 
   src = (mkAssets {
     inherit (appSources.frappe) pname src version;
-    yarnHash = "sha256-+9+GTazz45h/hpeG18+64uYFsOLdpETg9k9PnYFcRKA=";
+    yarnHash = "sha256-I33SEKMDd2mOjQTuNnk3AMN/syWUPw2hPtTkX7Xjhic=";
   });
 
   passthru =
@@ -127,6 +127,8 @@ buildPythonPackage rec {
       uuid-utils
       vobject
       sql_metadata
+      duckdb
+      pyarrow
     ]
     ++ passthru.packages;
 
@@ -227,6 +229,8 @@ buildPythonPackage rec {
     "tomli"
     "zxcvbn"
     "tinycss2"
+    "duckdb"
+    "pyarrow"
   ];
 
   pythonRemoveDeps = [
