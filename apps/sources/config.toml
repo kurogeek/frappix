@@ -111,3 +111,13 @@ Pull: +refs/heads/main:refs/remotes/upstream/main
 source = "github"
 use_max_tag = true
 github = "frappe/drive"
+
+[telephony]
+source = "github"
+branch = "develop"      # no releases
+github = "frappe/telephony"
+
+[helpdesk]
+source = "github"
+use_max_tag = true
+github = "frappe/helpdesk"

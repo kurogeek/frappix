@@ -1,0 +1,20 @@
+diff --git a/desk/src/socket.ts b/desk/src/socket.ts
+--- a/desk/src/socket.ts
++++ b/desk/src/socket.ts
+@@ -1,5 +1,4 @@
+ import { io } from "socket.io-client";
+-import { socketio_port } from "../../../../sites/common_site_config.json";
+ 
+ // extend window object
+ declare global {
+@@ -11,9 +10,7 @@ declare global {
+ export function initSocket() {
+   let host = window.location.hostname;
+   let siteName = window.site_name || host;
+-  let port = window.location.port ? `:${socketio_port}` : "";
+-  let protocol = port ? "http" : "https";
+-  let url = `${protocol}://${host}${port}/${siteName}`;
++  let url = `https://${host}/${siteName}`;
+ 
+   const socket = io(url, {
+     withCredentials: true,

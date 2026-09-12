@@ -15,6 +15,8 @@ in {
     ecommerce-integrations = callPackage ./ecommerce-integrations.nix {};
     gameplan = callPackage ./gameplan {};
     crm = callPackage ./crm.nix {};
+    helpdesk = callPackage ./helpdesk.nix {};
+    telephony = callPackage ./telephony.nix {};
     hrms = callPackage ./hrms.nix {};
     insights = callPackage ./insights.nix {};
     payments = callPackage ./payments.nix {};
