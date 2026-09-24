@@ -2,41 +2,30 @@
   description = "MY FRAPPIX";
 
   outputs = {
+    nixpkgs,
     frappix,
-    std,
-    self,
     ...
-  } @ inputs:
-    std.growOn {
-      inherit inputs;
-      cellsFrom = std.incl ./. ["tools" "apps" "deploy"];
-      cellBlocks = with std.blockTypes; [
-        # apps
-        (frappix.nvchecker "_pins")
-        (pkgs "pkgs")
+  }: let
+    systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
+    forAllSystems = nixpkgs.lib.genAttrs systems;
+    pkgsFor = system: import ./apps/pkgs.nix {inherit nixpkgs frappix system;};
+  in {
+    # the package set of this project, e.g. `nix build .#frappix.erpnext`
+    legacyPackages = forAllSystems pkgsFor;
 
-        # local
-        (anything "config" // {cli = false;})
-        (devshells "shells")
-        (frappix.frapper "tasks")
-      ];
-    };
+    # repository tasks, e.g. `nix run .#new-site` or `nix run .#run-env`
+    packages = forAllSystems (system: frappix.jobs.${system});
+
+    # the development environment, entered via direnv (see .envrc)
+    devShells = forAllSystems (system:
+      import ./tools/shells.nix {
+        inherit frappix system;
+        pkgs = pkgsFor system;
+      });
+  };
 
   # try to stick with a relesed version for a while
   inputs.nixpkgs.url = "github:nixos/nixpkgs/release-24.11";
 
-  inputs = {
-    frappix.url = "github:blaggacao/frappix";
-    std.follows = "frappix/std";
-    devshell.url = "github:numtide/devshell";
-    devshell.inputs.nixpkgs.follows = "nixpkgs";
-    nixago.url = "github:nix-community/nixago";
-    nixago.inputs.nixpkgs.follows = "nixpkgs";
-    nixago.inputs.nixago-exts.follows = "";
-    std.inputs = {
-      nixpkgs.follows = "nixpkgs";
-      devshell.follows = "devshell";
-      nixago.follows = "nixago";
-    };
-  };
+  inputs.frappix.url = "github:blaggacao/frappix";
 }

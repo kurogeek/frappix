@@ -3,10 +3,13 @@ This file holds reproducible shells with commands in them.
 
 They conveniently also generate config files in their startup hook.
 */
-let
-  inherit (inputs.std.lib) dev;
-  inherit (inputs.frappix) shellModule;
-  inherit (inputs.cells.apps) pkgs;
+{
+  frappix,
+  system,
+  pkgs,
+}: let
+  inherit (frappix.lib.${system}) dev;
+  shellModule = frappix.shellModule.${system};
 in {
   # Tool Homepage: https://numtide.github.io/devshell/
   default =

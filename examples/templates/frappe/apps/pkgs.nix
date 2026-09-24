@@ -1,6 +1,9 @@
-let
-  inherit (inputs) nixpkgs frappix;
-  inherit (cell) _pins;
+{
+  nixpkgs,
+  frappix,
+  system,
+}: let
+  _pins = import ./_pins.nix {inherit (nixpkgs) lib;};
 
   inject = final: prev: {
     pythonPackagesExtensions =
@@ -19,21 +22,19 @@ let
       # my-app = finalFrappix.callPackage ./my-app.nix {};
     });
   };
-
-  pkgs = import nixpkgs.path {
+in
+  import nixpkgs {
     # wkhtmltopdf
     config.permittedInsecurePackages = ["openssl-1.1.1w"];
     config.allowUnfree = true;
 
-    system = nixpkgs.system;
+    inherit system;
 
     overlays = [
-      frappix.libsOverlay
-      frappix.toolsOverlay
-      frappix.pythonOverlay
-      frappix.frappeOverlay
+      frappix.libsOverlay.${system}
+      frappix.toolsOverlay.${system}
+      frappix.pythonOverlay.${system}
+      frappix.frappeOverlay.${system}
       inject
     ];
-  };
-in
-  pkgs
+  }
