@@ -1,4 +1,4 @@
-{ nixpkgs }: {
+{nixpkgs}: {
   data = {};
   output = "book.toml";
   format = "toml";

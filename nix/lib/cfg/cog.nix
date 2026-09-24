@@ -1,4 +1,4 @@
-{ nixpkgs }: {
+{nixpkgs}: {
   data = {};
   output = "cog.toml";
   commands = [

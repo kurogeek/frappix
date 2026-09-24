@@ -1,4 +1,4 @@
-{ nixpkgs }: let
+{nixpkgs}: let
   l = nixpkgs.lib // builtins;
 in {
   data = {};

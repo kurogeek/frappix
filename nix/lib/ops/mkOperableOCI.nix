@@ -1,5 +1,9 @@
-{ nixpkgs, ops, dmerge, nix2container }:
-let
+{
+  nixpkgs,
+  ops,
+  dmerge,
+  nix2container,
+}: let
   l = nixpkgs.lib // builtins;
 in
   /*

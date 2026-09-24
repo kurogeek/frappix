@@ -1,4 +1,10 @@
-{ nixpkgs, nixago, dmerge }: let l = nixpkgs.lib // builtins; in
+{
+  nixpkgs,
+  nixago,
+  dmerge,
+}: let
+  l = nixpkgs.lib // builtins;
+in
   configuration: let
     # implement a minimal numtide/devshell forward contract
     configuration' =

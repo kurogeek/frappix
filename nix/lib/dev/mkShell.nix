@@ -1,4 +1,10 @@
-{ nixpkgs, devshell, nixago }: let l = nixpkgs.lib // builtins; in
+{
+  nixpkgs,
+  devshell,
+  nixago,
+}: let
+  l = nixpkgs.lib // builtins;
+in
   configuration: let
     nixagoModule = {
       config,

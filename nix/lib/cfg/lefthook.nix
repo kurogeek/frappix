@@ -1,4 +1,4 @@
-{ nixpkgs }: let
+{nixpkgs}: let
   lib = nixpkgs.lib // builtins;
 
   mkScript = stage:

@@ -1,4 +1,4 @@
-{ nixpkgs }: let
+{nixpkgs}: let
   inherit (nixpkgs) lib;
 in {
   data = {

@@ -1,4 +1,4 @@
-{ nixpkgs }: {
+{nixpkgs}: {
   data = {};
   output = "treefmt.toml";
   format = "toml";
