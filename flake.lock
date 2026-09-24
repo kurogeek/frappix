@@ -282,23 +282,6 @@
         "type": "github"
       }
     },
-    "paisano-tui": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1708637035,
-        "narHash": "sha256-R19YURSK+MY/Rw6FZnojQS9zuDh+OoTAyngQAjjoubc=",
-        "owner": "paisano-nix",
-        "repo": "tui",
-        "rev": "231761b260587a64817e4ffae3afc15defaa15db",
-        "type": "github"
-      },
-      "original": {
-        "owner": "paisano-nix",
-        "ref": "v0.5.0",
-        "repo": "tui",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "arion": "arion",
@@ -307,8 +290,7 @@
         "microvm": "microvm",
         "n2c": "n2c",
         "nixago": "nixago",
-        "nixpkgs": "nixpkgs_2",
-        "paisano-tui": "paisano-tui"
+        "nixpkgs": "nixpkgs_2"
       }
     },
     "spectrum": {

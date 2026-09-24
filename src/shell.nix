@@ -291,7 +291,6 @@ in {
             inherit package;
           };
         in [
-          (mainPackage pkgs.frx)
           (mainPackage pkgs.bench)
           (devPackage pkgs.pre-commit)
           (devPackage pkgs.nvfetcher)

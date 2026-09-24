@@ -13,7 +13,7 @@
   };
 
   tools = {
-    __functor = _: (import ./tools inputs);
+    __functor = _: (import ./tools);
     meta.description = "Frappix tools overlays";
   };
 

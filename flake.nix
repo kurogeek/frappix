@@ -6,24 +6,34 @@
     inherit (loader) systems cells;
     lib = inputs.nixpkgs.lib;
     forAllSystems = lib.genAttrs systems;
-  in
-    # The per-system cell tree, exposed at the top level exactly like the
-    # former `std` schema (e.g. `.#x86_64-linux.src.pkgs.frx`,
-    # `.#x86_64-linux.local.shells.book`).
-    (forAllSystems (system: cells.${system}))
-    // {
-      # nix-cli compatible outputs (formerly assembled via `std.growOn` soil).
-      packages = forAllSystems (system: {inherit (cells.${system}.src.pkgs) frx;});
-      shellModule = forAllSystems (system: cells.${system}.src.shell.bench);
-      toolsOverlay = forAllSystems (system: cells.${system}.src.overlays.tools);
-      devShells = forAllSystems (system: cells.${system}.local.shells);
-      checks = forAllSystems (system: cells.${system}.tests.checks);
-      pythonOverlay = forAllSystems (system: cells.${system}.src.overlays.python);
-      frappeOverlay = forAllSystems (system: cells.${system}.src.overlays.frappe);
-      libsOverlay = forAllSystems (system: cells.${system}.src.overlays.libs);
-      nixosModules = forAllSystems (system: cells.${system}.src.nixos);
-      templates = cells.${lib.head systems}.examples.templates;
-    };
+  in {
+    # The full nixpkgs instance with all frappix overlays applied,
+    # e.g. `nix build .#frappix.erpnext` or `nix run .#nvchecker-nix`.
+    legacyPackages = forAllSystems (system: cells.${system}.src.pkgs);
+    packages = forAllSystems (system: {
+      deployment-for-manual-testing = cells.${system}.deployment-for-manual-testing.runnables.script;
+    });
+    devShells = forAllSystems (system: cells.${system}.local.shells);
+    checks = forAllSystems (system: cells.${system}.tests.checks);
+    templates = cells.${lib.head systems}.examples.templates;
+
+    # For downstream projects (see examples/templates).
+    inherit (loader) lib;
+    shellModule = forAllSystems (system: cells.${system}.src.shell.bench);
+    jobs = forAllSystems (system: cells.${system}.src.jobs);
+    toolsOverlay = forAllSystems (system: cells.${system}.src.overlays.tools);
+    pythonOverlay = forAllSystems (system: cells.${system}.src.overlays.python);
+    frappeOverlay = forAllSystems (system: cells.${system}.src.overlays.frappe);
+    libsOverlay = forAllSystems (system: cells.${system}.src.overlays.libs);
+    nixosModules = forAllSystems (system: cells.${system}.src.nixos);
+    ociModules = forAllSystems (system: cells.${system}.src.oci);
+
+    # Deployment artifacts and test beds.
+    ociImages = forAllSystems (system: cells.${system}.src.oci-images);
+    microvms = forAllSystems (system: cells.${system}.src.vms);
+    nixosTests = forAllSystems (system: cells.${system}.tests.nixos-tests);
+    arionProjects = forAllSystems (system: cells.${system}.tests.arion-compose);
+  };
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -38,11 +48,7 @@
     arion.url = "github:hercules-ci/arion";
     arion.inputs.nixpkgs.follows = "nixpkgs";
     n2c.url = "github:nlewo/nix2container";
-    # deep-merge helper, formerly pulled in transitively via divnix/std
+    # deep-merge helper used by the oci tooling
     dmerge.url = "github:divnix/dmerge/0.2.1";
-    # frx is the (frappix-branded) paisano TUI; build it from source directly
-    # (formerly reached via std.inputs.paisano-tui).
-    paisano-tui.url = "github:paisano-nix/tui/v0.5.0";
-    paisano-tui.flake = false;
   };
 }

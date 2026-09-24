@@ -1,4 +1,4 @@
-inputs: final: prev: {
+final: prev: {
   nvchecker-nix = final.python3.pkgs.callPackage ./nvchecker.nix {};
   # special (optional) yarn build tooling for frappe
   mkAssets = final.callPackage ./mkAssets.nix {};
@@ -6,11 +6,6 @@ inputs: final: prev: {
   mkSiteAssets = final.callPackage ./mkSiteAssets.nix {};
 
   fsjd = final.callPackage ./fsjd.nix {};
-  frx = final.callPackage ./frx.nix {
-    version = inputs.nixpkgs.lib.fileContents (inputs.self + /VERSION);
-    inherit (inputs) paisano-tui;
-    inherit (import (inputs.self + /flake.nix)) description;
-  };
   extractFrappeMeta = src: let
     inherit (builtins) match head replaceStrings readFile fromTOML;
     pyproject = fromTOML (readFile (src + /pyproject.toml));
