@@ -5,8 +5,7 @@ They conveniently also generate config files in their startup hook.
 */
 let
   inherit (cell) config;
-  inherit (inputs.std.std) cli;
-  inherit (inputs.std.lib) dev cfg;
+  inherit (inputs.stdlib) dev cfg;
   pkgs = import inputs.nixpkgs {
     inherit (inputs.nixpkgs) system;
     overlays = [
@@ -31,7 +30,6 @@ in {
       ];
 
       commands = [
-        {package = cli.std;}
         {package = pkgs.nvfetcher;}
         {package = pkgs.nvchecker-nix;}
       ];

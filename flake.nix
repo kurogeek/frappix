@@ -1,59 +1,33 @@
 {
   description = "Frappe Development & Deployment Environment";
 
-  outputs = {
-    std,
-    self,
-    ...
-  } @ inputs:
-    std.growOn {
-      inherit inputs;
-      cellsFrom = std.incl ./. ["src" "local" "apps" "examples" "tests" "deployment-for-manual-testing"];
-      cellBlocks = with std.blockTypes; [
-        (data "templates")
-
-        # Pkgs Functions for Frappe Framework Components
-        (functions "overlays")
-        (pkgs "pkgs")
-
-        # App Sources
-        (self.nvchecker "sources")
-
-        # Modules
-        (anything "nixos")
-        (anything "shell")
-        (nixostests "nixos-tests")
-        (runnables "runnables")
-        (microvms "vms")
-        (runnables "jobs" // {cli = false;}) # for downstream use
-
-        # containers
-        (anything "oci") # really: oci modules
-        (containers "oci-images" {ci.publish = true;})
-        (arion "arion-compose")
-
-        # local
-        (anything "config" // {cli = false;})
-        (devshells "shells")
-      ];
-    }
-    {
-      packages = std.winnow (n: _: n == "frx") self ["src" "pkgs"];
-      shellModule = std.harvest self ["src" "shell" "bench"];
-      toolsOverlay = std.harvest self ["src" "overlays" "tools"];
-      pythonOverlay = std.harvest self ["src" "overlays" "python"];
-      frappeOverlay = std.harvest self ["src" "overlays" "frappe"];
-      libsOverlay = std.harvest self ["src" "overlays" "libs"];
-      nixosModules = std.harvest self ["src" "nixos"];
-      frapper = import ./std/frapper.nix {inherit inputs;};
-      nvchecker = import ./std/nvchecker.nix {inherit inputs;};
-      templates = std.pick self ["examples" "templates"];
+  outputs = inputs: let
+    loader = import ./nix/loader.nix {inherit inputs;};
+    inherit (loader) systems cells;
+    lib = inputs.nixpkgs.lib;
+    forAllSystems = lib.genAttrs systems;
+  in
+    # The per-system cell tree, exposed at the top level exactly like the
+    # former `std` schema (e.g. `.#x86_64-linux.src.pkgs.frx`,
+    # `.#x86_64-linux.local.shells.book`).
+    (forAllSystems (system: cells.${system}))
+    // {
+      # nix-cli compatible outputs (formerly assembled via `std.growOn` soil).
+      packages = forAllSystems (system: {inherit (cells.${system}.src.pkgs) frx;});
+      shellModule = forAllSystems (system: cells.${system}.src.shell.bench);
+      toolsOverlay = forAllSystems (system: cells.${system}.src.overlays.tools);
+      devShells = forAllSystems (system: cells.${system}.local.shells);
+      checks = forAllSystems (system: cells.${system}.tests.checks);
+      pythonOverlay = forAllSystems (system: cells.${system}.src.overlays.python);
+      frappeOverlay = forAllSystems (system: cells.${system}.src.overlays.frappe);
+      libsOverlay = forAllSystems (system: cells.${system}.src.overlays.libs);
+      nixosModules = forAllSystems (system: cells.${system}.src.nixos);
+      templates = cells.${lib.head systems}.examples.templates;
     };
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
   inputs = {
-    std.url = "github:divnix/std/v0.33.4";
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
     nixago.url = "github:nix-community/nixago";
@@ -63,17 +37,12 @@
     microvm.inputs.nixpkgs.follows = "nixpkgs";
     arion.url = "github:hercules-ci/arion";
     arion.inputs.nixpkgs.follows = "nixpkgs";
-    # arion.inputs.hercules-ci-effects.follows = "";
     n2c.url = "github:nlewo/nix2container";
-    # n2c.inputs.nixpkgs.follows = "nixpkgs";
-    std.inputs = {
-      paisano.url = "github:paisano-nix/core";
-      n2c.follows = "n2c";
-      nixpkgs.follows = "nixpkgs";
-      devshell.follows = "devshell";
-      nixago.follows = "nixago";
-      microvm.follows = "microvm";
-      arion.follows = "arion";
-    };
+    # deep-merge helper, formerly pulled in transitively via divnix/std
+    dmerge.url = "github:divnix/dmerge/0.2.1";
+    # frx is the (frappix-branded) paisano TUI; build it from source directly
+    # (formerly reached via std.inputs.paisano-tui).
+    paisano-tui.url = "github:paisano-nix/tui/v0.5.0";
+    paisano-tui.flake = false;
   };
 }

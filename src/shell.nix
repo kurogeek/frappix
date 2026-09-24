@@ -4,8 +4,7 @@
 }: let
   inherit (inputs) nixpkgs;
   inherit (inputs.nixpkgs) lib;
-  inherit (inputs.std.lib) dev cfg;
-  inherit (inputs.std.data) configs;
+  inherit (inputs.stdlib) dev cfg configs;
   inherit (builtins) toJSON;
   libcfg = cfg;
 in {

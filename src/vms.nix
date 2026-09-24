@@ -1,5 +1,5 @@
 let
-  inherit (inputs.std.inputs) microvm;
+  inherit (inputs) microvm;
   inherit (inputs) nixpkgs;
   inherit (cell) pkgs nixos;
   eval = module:

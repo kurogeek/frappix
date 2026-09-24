@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: nixbuild/nix-quick-install-action@v29
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      # Evaluate the whole flake schema (fast, catches wiring regressions).
+      - name: Evaluate flake
+        run: nix flake show --all-systems
+      # Build the frx CLI (primary package output).
+      - name: Build frx
+        run: nix build .#packages.x86_64-linux.frx
+      # Make sure the dev shells still evaluate/activate.
+      - name: Evaluate dev shells
+        run: |
+          nix eval --raw .#devShells.x86_64-linux.default.name
+          nix eval --raw .#devShells.x86_64-linux.book.name

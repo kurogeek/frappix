@@ -8,7 +8,7 @@ inputs: final: prev: {
   fsjd = final.callPackage ./fsjd.nix {};
   frx = final.callPackage ./frx.nix {
     version = inputs.nixpkgs.lib.fileContents (inputs.self + /VERSION);
-    inherit (inputs.std.inputs) paisano-tui;
+    inherit (inputs) paisano-tui;
     inherit (import (inputs.self + /flake.nix)) description;
   };
   extractFrappeMeta = src: let

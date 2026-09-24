@@ -99,7 +99,11 @@ in {
         requiredBy = ["${cfg.project}.target"];
         partOf = ["${cfg.project}.target"]; # ensures restart / stop
         wants = ["${cfg.project}-config.target"];
-        after = ["${cfg.project}-config.target"];
+        # don't serve, schedule or work before sites are installed & migrated
+        after = [
+          "${cfg.project}-config.target"
+          "${cfg.project}-setup.target"
+        ];
       in {
         "${cfg.project}-schedule" = {
           description = "${cfg.project}: frappe scheduler";
@@ -116,6 +120,9 @@ in {
             "python -m gunicorn"
             "--bind unix:${cfg.webSocket}"
             "--pid ${dirOf cfg.webSocket}/gunicorn.pid"
+            # gunicorn >= 26 opens a control socket, defaulting to $HOME which is
+            # not writable for the service user (ProtectSystem=strict)
+            "--control-socket ${dirOf cfg.webSocket}/gunicorn.ctl"
             "--workers ${toString cfg.gunicorn_workers}"
             "--timeout ${toString cfg.http_timeout}"
             "--max-requests ${toString cfg.gunicorn_max_requests}"
@@ -165,13 +172,12 @@ in {
           wantedBy = ["${cfg.project}-worker.target"];
           partOf = ["${cfg.project}-worker.target"]; # ensures restart / stop
           wants = ["${cfg.project}-config.target"];
-          after = ["${cfg.project}-config.target"];
+          # don't work before sites are installed & migrated
+          after = [
+            "${cfg.project}-config.target"
+            "${cfg.project}-setup.target"
+          ];
           serviceConfig = defaultServiceConfig;
-          unitConfig = {
-            # PartOf = ["${cfg.project}-worker.target"];
-            # Requires = ["${cfg.project}-setup.target"];
-            # After = ["${cfg.project}-setup.target"];
-          };
         };
       in
         mapAttrs' (mkWorker args) cfg.workerQueues;
@@ -200,8 +206,9 @@ in {
           # don't propagate restarts and stops
           requiredBy = ["${cfg.project}-setup-${site}.target"];
           wants = ["${cfg.project}-config.target"];
-          after = [ "${cfg.project}-config.target" "mysql.service" ];
-          requires = [ "mysql.service" ];
+          # migrations enqueue background jobs and use the cache
+          after = ["${cfg.project}-config.target" "mysql.service" "${cfg.project}-redis.target"];
+          requires = ["mysql.service" "${cfg.project}-redis.target"];
         };
       in
         (mapAttrs' (mkMaybeSiteMigrate args) cfg.sites) # either, if site directory exists
@@ -337,14 +344,14 @@ in {
                 set -euo pipefail
 
                 echo "Check if installed on site: ${concatStringsSep ", " apps} ..."
-                readarray -t -d "" installed_apps < <(bench --site ${site} list-apps --format json | jq -r '.${site}[]')
-                apps_to_install=($(echo ${concatStringsSep " " apps} ''${installed_apps[@]} | tr ' ' '\n' | sort | uniq -u))
-                for iapp in ''${installed_apps[@]}; do
-                  for i in ''${!apps_to_install[@]}; do
-                    if [[ ''${apps_to_install[i]} = $iapp ]]; then
-                      unset 'apps_to_install[i]'
-                    fi
-                  done
+                readarray -t installed_apps < <(
+                  bench --site "${site}" list-apps --format json | jq -r --arg site "${site}" '.[$site][]'
+                )
+                apps_to_install=()
+                for app in ${concatStringsSep " " apps}; do
+                  if ! printf '%s\n' "''${installed_apps[@]}" | grep -qx "$app"; then
+                    apps_to_install+=("$app")
+                  fi
                 done
                 if [[ ! ''${#apps_to_install[@]} -eq 0 ]]; then
                   echo "Installing ''${apps_to_install[@]} on ${site}..."

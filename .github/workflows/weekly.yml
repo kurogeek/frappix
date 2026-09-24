@@ -20,7 +20,7 @@ jobs:
         run: |
           # Your commands here
           nix run .#x86_64-linux.src.pkgs.nvchecker-nix -- -c ./apps/sources/config.toml
-          nix build '.#__std.actions.x86_64-linux."src"."oci-images"."frappix-base"."build"' 
+          nix build .#x86_64-linux.src.oci-images.frappix-base
 
       - name: Commit changes
         run: |
@@ -46,7 +46,7 @@ jobs:
             Changes made:
             
             - `nix run .#x86_64-linux.src.pkgs.nvchecker-nix -- -c ./apps/sources/config.toml`
-            - `nix build '.#__std.actions.x86_64-linux."src"."oci-images"."frappix-base"."build"'`
+            - `nix build .#x86_64-linux.src.oci-images.frappix-base`
 
           branch: weekly-update
           base: main
