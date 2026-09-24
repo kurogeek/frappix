@@ -1,9 +1,9 @@
-inputs: {pkgs, ...}: {
+{sources}: {pkgs, ...}: {
   oci.frappix = {
     name = "ghcr.io/blaggacao/frappix-test-oci";
     debug = false;
     apps = let
-      appList = builtins.attrNames (builtins.removeAttrs inputs.cells.apps.sources [
+      appList = builtins.attrNames (builtins.removeAttrs sources [
         "bench" # not an app
         "frappe" # automatically added; don't add twice
         "builder" # brakes via https://github.com/frappe/builder/commit/cae39ff422812b52d3c1b25ae4756669add794d1#commitcomment-148362353

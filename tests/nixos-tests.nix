@@ -1,11 +1,14 @@
-let
-  inherit (inputs) nixpkgs;
-  inherit (inputs.cells.src) pkgs nixos;
-  inherit (inputs.nixpkgs) lib;
+{
+  nixpkgs,
+  system,
+  pkgs,
+  nixos,
+}: let
+  inherit (nixpkgs) lib;
 
   site = "testproject.local";
   project = "TestProject";
-  nixos-lib = import (nixpkgs + /nixos/lib) {inherit (nixpkgs) system;};
+  nixos-lib = import (nixpkgs + /nixos/lib) {inherit system;};
 
   defaults = {
     nixpkgs = {inherit pkgs;};

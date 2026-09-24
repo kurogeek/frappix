@@ -1,5 +1,6 @@
 {
   nixpkgs,
+  system,
   devshell,
   nixago,
 }: let
@@ -56,7 +57,7 @@ in
       };
 
     pkgs = import nixpkgs {
-      inherit (nixpkgs) system;
+      inherit system;
       overlays = [devshell.overlays.default];
     };
   in

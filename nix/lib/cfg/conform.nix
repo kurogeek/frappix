@@ -10,17 +10,7 @@ in {
       []
       ++ (l.optional (d ? commit) {
         type = "commit";
-        spec =
-          d.commit
-          // l.optionalAttrs (d ? cells) {
-            conventional =
-              d.commit.conventional
-              // {
-                scopes =
-                  d.commit.conventional.scopes
-                  ++ (l.subtractLists l.systems.doubles.all (l.attrNames d.cells));
-              };
-          };
+        spec = d.commit;
       })
       ++ (l.optional (d ? license) {
         type = "license";

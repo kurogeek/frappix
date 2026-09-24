@@ -1,10 +1,13 @@
-let
-  inherit (inputs) microvm;
-  inherit (inputs) nixpkgs;
-  inherit (cell) pkgs nixos;
+{
+  nixpkgs,
+  system,
+  pkgs,
+  nixos,
+  microvm,
+}: let
   eval = module:
     import (nixpkgs + /nixos/lib/eval-config.nix) {
-      inherit (nixpkgs) system;
+      inherit system;
       modules = [module];
     };
 in {

@@ -2,37 +2,37 @@
   description = "Frappe Development & Deployment Environment";
 
   outputs = inputs: let
-    loader = import ./nix/loader.nix {inherit inputs;};
-    inherit (loader) systems cells;
     lib = inputs.nixpkgs.lib;
-    forAllSystems = lib.genAttrs systems;
+    systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
+    perSystem = lib.genAttrs systems (system: import ./nix {inherit inputs system;});
+    forAllSystems = f: lib.mapAttrs (_: f) perSystem;
   in {
     # The full nixpkgs instance with all frappix overlays applied,
     # e.g. `nix build .#frappix.erpnext` or `nix run .#nvchecker-nix`.
-    legacyPackages = forAllSystems (system: cells.${system}.src.pkgs);
-    packages = forAllSystems (system: {
-      deployment-for-manual-testing = cells.${system}.deployment-for-manual-testing.runnables.script;
+    legacyPackages = forAllSystems (frappix: frappix.pkgs);
+    packages = forAllSystems (frappix: {
+      deployment-for-manual-testing = frappix.deploymentForManualTesting.script;
     });
-    devShells = forAllSystems (system: cells.${system}.local.shells);
-    checks = forAllSystems (system: cells.${system}.tests.checks);
-    templates = cells.${lib.head systems}.examples.templates;
+    devShells = forAllSystems (frappix: frappix.devShells);
+    checks = forAllSystems (frappix: frappix.checks);
+    templates = import ./examples/templates.nix;
 
     # For downstream projects (see examples/templates).
-    inherit (loader) lib;
-    shellModule = forAllSystems (system: cells.${system}.src.shell.bench);
-    jobs = forAllSystems (system: cells.${system}.src.jobs);
-    toolsOverlay = forAllSystems (system: cells.${system}.src.overlays.tools);
-    pythonOverlay = forAllSystems (system: cells.${system}.src.overlays.python);
-    frappeOverlay = forAllSystems (system: cells.${system}.src.overlays.frappe);
-    libsOverlay = forAllSystems (system: cells.${system}.src.overlays.libs);
-    nixosModules = forAllSystems (system: cells.${system}.src.nixos);
-    ociModules = forAllSystems (system: cells.${system}.src.oci);
+    lib = forAllSystems (frappix: frappix.lib);
+    shellModule = forAllSystems (frappix: frappix.shell.bench);
+    jobs = forAllSystems (frappix: frappix.jobs);
+    toolsOverlay = forAllSystems (frappix: frappix.overlays.tools);
+    pythonOverlay = forAllSystems (frappix: frappix.overlays.python);
+    frappeOverlay = forAllSystems (frappix: frappix.overlays.frappe);
+    libsOverlay = forAllSystems (frappix: frappix.overlays.libs);
+    nixosModules = forAllSystems (frappix: frappix.nixos);
+    ociModules = forAllSystems (frappix: frappix.oci);
 
     # Deployment artifacts and test beds.
-    ociImages = forAllSystems (system: cells.${system}.src.oci-images);
-    microvms = forAllSystems (system: cells.${system}.src.vms);
-    nixosTests = forAllSystems (system: cells.${system}.tests.nixos-tests);
-    arionProjects = forAllSystems (system: cells.${system}.tests.arion-compose);
+    ociImages = forAllSystems (frappix: frappix.ociImages);
+    microvms = forAllSystems (frappix: frappix.microvms);
+    nixosTests = forAllSystems (frappix: frappix.nixosTests);
+    arionProjects = forAllSystems (frappix: frappix.arionProjects);
   };
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";

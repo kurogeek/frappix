@@ -1,11 +1,10 @@
-let
-  inherit (inputs.lib) dev;
-  inherit (inputs.cells.src) oci-images;
-
+{
+  ociImages,
+  dev,
+}: let
   # // {
   #   meta.description = "The frappix vm-based test suite using oci images";
   # };
-
   environment = {
     FRAPPE_REDIS_CACHE = "redis://redis-cache:6379";
     FRAPPE_REDIS_QUEUE = "redis://redis-queue:6379";
@@ -13,7 +12,7 @@ let
     FRAPPE_DB_PORT = 80;
     FRAPPE_SOCKETIO_PORT = 9000;
   };
-  image = oci-images.frappix-base.image.name;
+  image = ociImages.frappix-base.image.name;
   volumes = [
     # "sysite:/var/lib/frappix/sites/mysite"
   ];

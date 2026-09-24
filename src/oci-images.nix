@@ -1,6 +1,9 @@
-let
-  inherit (inputs.nixpkgs) lib;
-  inherit (cell) pkgs oci;
+{
+  nixpkgs,
+  pkgs,
+  oci,
+}: let
+  inherit (nixpkgs) lib;
 
   evaled = lib.evalModules {
     modules = [

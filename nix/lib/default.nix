@@ -7,7 +7,7 @@ The frappix helper library, assembled per-system.
   - configs : the data those pebbles render
 
 `nixpkgs` is an already instantiated (plain) nixpkgs package set for `system`.
-Exposed as `inputs.lib` inside the cells and as `lib.<system>` on the flake.
+Exposed as `lib.<system>` on the flake.
 */
 {
   inputs,
@@ -20,7 +20,7 @@ Exposed as `inputs.lib` inside the cells and as `lib.<system>` on the flake.
 in {
   ops = import ./ops {inherit nixpkgs dmerge nix2container;};
   dev = import ./dev {
-    inherit nixpkgs dmerge nixago;
+    inherit nixpkgs system dmerge nixago;
     inherit (inputs) devshell arion;
   };
   cfg = import ./cfg {inherit nixpkgs;};

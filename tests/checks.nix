@@ -6,11 +6,13 @@ Unlike tests/nixos-tests.nix (which layers the `testrig` mixin and runs the
 full frappe unit-test suite), these only assert that the plain module — as a
 downstream user would declare it — brings up a working site.
 */
-let
-  inherit (inputs) nixpkgs;
-  inherit (inputs.cells.src) pkgs nixos;
-
-  nixos-lib = import (nixpkgs + /nixos/lib) {inherit (nixpkgs) system;};
+{
+  nixpkgs,
+  system,
+  pkgs,
+  nixos,
+}: let
+  nixos-lib = import (nixpkgs + /nixos/lib) {inherit system;};
 
   project = "minimal";
   site = "frappe.local";

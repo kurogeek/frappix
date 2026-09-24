@@ -1,6 +1,6 @@
 # Hacking on Frappix
 
-Frappix' `./local` cell contrains the full specification of the local contribution environment.
+Frappix' `./local` folder contains the full specification of the local contribution environment.
 
 Prerequisites:
 

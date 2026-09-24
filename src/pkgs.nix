@@ -1,17 +1,19 @@
-let
-  pkgs = import inputs.nixpkgs.path {
-    # wkhtmltopdf
-    config.permittedInsecurePackages = ["openssl-1.1.1w"];
-    config.allowUnfree = true;
+{
+  nixpkgs,
+  system,
+  overlays,
+}:
+import nixpkgs {
+  # wkhtmltopdf
+  config.permittedInsecurePackages = ["openssl-1.1.1w"];
+  config.allowUnfree = true;
 
-    system = inputs.nixpkgs.system;
+  inherit system;
 
-    overlays = [
-      cell.overlays.libs
-      cell.overlays.tools
-      cell.overlays.python
-      cell.overlays.frappe
-    ];
-  };
-in
-  pkgs
+  overlays = [
+    overlays.libs
+    overlays.tools
+    overlays.python
+    overlays.frappe
+  ];
+}

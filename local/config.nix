@@ -7,7 +7,7 @@ A: (1) dotfile proliferation
    (2) have all the things in one place / fromat
    (3) potentially share / re-use configuration data - keeping it in sync
 */
-{
+{nixpkgs}: {
   # Tool Homepage: https://editorconfig.org/
   editorconfig = {
     data = {
@@ -30,8 +30,8 @@ A: (1) dotfile proliferation
   # Tool Homepage: https://numtide.github.io/treefmt/
   treefmt = {
     packages = [
-      inputs.nixpkgs.alejandra
-      inputs.nixpkgs.shfmt
+      nixpkgs.alejandra
+      nixpkgs.shfmt
     ];
     data = {
       formatter = {
@@ -92,7 +92,7 @@ A: (1) dotfile proliferation
   mdbook = {
     # add preprocessor packages here
     packages = [
-      inputs.nixpkgs.mdbook-linkcheck2
+      nixpkgs.mdbook-linkcheck2
     ];
     data = {
       # Configuration Reference: https://rust-lang.github.io/mdBook/format/configuration/index.html

@@ -1,6 +1,6 @@
 # Using Frappix
 
-This `./src` cell implements Frappix, Frappe-on-Nix.
+This `./src` folder implements Frappix, Frappe-on-Nix.
 
 ## `./config.nix`
 

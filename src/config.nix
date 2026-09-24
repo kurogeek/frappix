@@ -1,8 +1,8 @@
-let
-  lib = inputs.nixpkgs.lib // builtins;
+{nixpkgs}: let
+  lib = nixpkgs.lib // builtins;
 
   redisEngine = request:
-    inputs.nixpkgs.writeText "redis.conf" (lib.concatStringsSep "\n"
+    nixpkgs.writeText "redis.conf" (lib.concatStringsSep "\n"
       (lib.mapAttrsToList (name: command: "${name} ${command}")
         request.data));
 in {
@@ -65,8 +65,8 @@ in {
       };
     };
     packages = [
-      inputs.nixpkgs.process-compose
-      inputs.nixpkgs.envsubst
+      nixpkgs.process-compose
+      nixpkgs.envsubst
     ];
   };
 
@@ -133,7 +133,7 @@ in {
   mdbook = {
     # add preprocessor packages here
     packages = [
-      inputs.nixpkgs.mdbook-linkcheck2
+      nixpkgs.mdbook-linkcheck2
     ];
     data = {
       # Configuration Reference: https://rust-lang.github.io/mdBook/format/configuration/index.html

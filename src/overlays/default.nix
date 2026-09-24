@@ -1,4 +1,4 @@
-{
+{sources}: {
   python = {
     __functor = _: final: prev: {
       pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [(import ./python)];
@@ -8,7 +8,7 @@
 
   frappe = {
     __functor = import ./frappe;
-    inherit (inputs.cells.apps) sources; # providing: frappe, erpnext, ...
+    inherit sources; # providing: frappe, erpnext, ...
     meta.description = "Frappix stock overlays";
   };
 
@@ -18,7 +18,7 @@
   };
 
   libs = {
-    __functor = _: (import ./libs inputs);
+    __functor = _: (import ./libs);
     meta.description = "Frappix additional libs and native binaries";
   };
 }

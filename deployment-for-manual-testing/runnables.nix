@@ -1,6 +1,9 @@
-let
-  inherit (inputs) nixpkgs;
-  inherit (inputs.cells.src) pkgs nixos system;
+{
+  nixpkgs,
+  system,
+  pkgs,
+  nixos,
+}: let
   inherit (nixpkgs) lib;
   evalNixos = import (nixpkgs + /nixos/lib/eval-config.nix);
 

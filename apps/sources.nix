@@ -1,6 +1,6 @@
-let
+{nixpkgs}: let
   inherit (builtins) readDir;
-  inherit (inputs.nixpkgs) lib applyPatches replaceVars;
+  inherit (nixpkgs) lib applyPatches replaceVars;
 
   fileIsNix = basename: type: type == "regular" && lib.hasSuffix ".nix" basename;
 
@@ -43,7 +43,9 @@ let
           passthru = (attrs.passthru or {}) // {inherit workdirsrc;};
         };
     }
-    .${name}
+    .${
+      name
+    }
     or attrs;
 in
   lib.mapAttrs applyInputPatches (lib.mapAttrs' sanitizeKey (sourceDirectoryEntries ./sources))

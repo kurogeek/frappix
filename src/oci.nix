@@ -1,4 +1,7 @@
 {
+  sources,
+  ops,
+}: {
   frappix = {
     meta.description = "The main frappix OCI module";
     __functor = _: {
@@ -9,7 +12,7 @@
       # load our custom `pkgs`
       _module.args = {
         inherit (pkgs) frappix;
-        inherit (inputs.lib) ops;
+        inherit ops;
       };
       _file = ./oci.nix;
       imports = map (m: lib.modules.setDefaultModuleLocation m m) [
@@ -26,7 +29,7 @@
     }: {
       _file = ./oci.nix;
       imports = map (m: lib.modules.setDefaultModuleLocation m m) [
-        (import ./oci/testrig.nix inputs)
+        (import ./oci/testrig.nix {inherit sources;})
       ];
     };
   };

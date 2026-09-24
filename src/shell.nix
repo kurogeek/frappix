@@ -1,10 +1,12 @@
 {
-  inputs,
-  cell,
+  nixpkgs,
+  # configuration data for the dotfiles rendered by the shell, see ./config.nix
+  configData,
+  dev,
+  cfg,
+  configs,
 }: let
-  inherit (inputs) nixpkgs;
-  inherit (inputs.nixpkgs) lib;
-  inherit (inputs.lib) dev cfg configs;
+  inherit (nixpkgs) lib;
   inherit (builtins) toJSON;
   libcfg = cfg;
 in {
@@ -64,9 +66,9 @@ in {
         name = lib.mkDefault "Frappix Shell";
         nixago =
           [
-            (dev.mkNixago cell.config.process-compose)
-            (dev.mkNixago (cell.config.redis_queue pkgs))
-            (dev.mkNixago (cell.config.redis_cache pkgs))
+            (dev.mkNixago configData.process-compose)
+            (dev.mkNixago (configData.redis_queue pkgs))
+            (dev.mkNixago (configData.redis_cache pkgs))
           ]
           ++ lib.optionals cfg.enableExtraProjectTools [
             (dev.mkNixago configs.cog)
@@ -105,8 +107,8 @@ in {
                 prettier.excludes = ["apps/_pins/*.json"];
               };
             })
-            (dev.mkNixago libcfg.editorconfig cell.config.editorconfig)
-            (dev.mkNixago libcfg.mdbook cell.config.mdbook {
+            (dev.mkNixago libcfg.editorconfig configData.editorconfig)
+            (dev.mkNixago libcfg.mdbook configData.mdbook {
               data.book.title = config.name + " Documentation";
             })
           ];

@@ -1,5 +1,5 @@
-let
-  inherit (inputs.nixpkgs.writers) writeBashBin;
+{nixpkgs}: let
+  inherit (nixpkgs.writers) writeBashBin;
 in {
   new-site =
     (writeBashBin "new-site.sh" ''
