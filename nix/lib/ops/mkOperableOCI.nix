@@ -104,7 +104,7 @@ in
           # match undefined on args ? tag
           // l.optionalAttrs (args ? tag) {inherit tag;})
         {
-          # mkStandardOCI differentiators over mkOCI
+          # mkOperableOCI differentiators over mkOCI
           # - live & readiness probes
           # - user & nss setup
           # - world writable /tmp & curl's certificates bundle

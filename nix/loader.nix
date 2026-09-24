@@ -1,22 +1,17 @@
 /*
-A tiny, plain-Nix cell loader that replaces `divnix/std` (paisano) `growOn`.
+A tiny, plain-Nix loader for the repository's cell tree (<cell>/<block>.nix).
 
-It reproduces exactly the three magic bindings that the cell files rely on:
+Every block file is evaluated with `builtins.scopedImport` so that two free
+variables resolve; if the file evaluates to a function it is additionally
+applied to `{inputs, cell;}`:
 
   - `inputs`  : the flake inputs, but with `inputs.nixpkgs` swapped for an
                 instantiated (plain) nixpkgs package set for the current system,
                 `inputs.self` reduced to sourceInfo, `inputs.cells` set to all
-                loaded cells, and `inputs.stdlib` set to the vendored library
-                (see ./stdlib.nix, the former `inputs.std.lib`/`inputs.std.data`).
+                loaded cells and `inputs.lib` set to the helper library
+                (see ./lib).
   - `cell`    : the current cell's own blocks (siblings).
   - `inputs.cells.<cell>.<block>` : every cell's blocks, plus `.system`.
-
-Like paisano, each block file is loaded with `builtins.scopedImport` so that
-`inputs` and `cell` resolve as free variables; if the file evaluates to a
-function it is additionally applied to `{inputs, cell;}`.
-
-The `system` attribute injected onto each cell mirrors paisano's de-systemized
-`inputs.cells.<cell>.system` (used by deployment-for-manual-testing/runnables).
 */
 {inputs}: let
   inherit (inputs) nixpkgs;
@@ -30,6 +25,13 @@ The `system` attribute injected onto each cell mirrors paisano's de-systemized
 
   # An instantiated, importable, plain nixpkgs for `system`.
   npkgsFor = system: nixpkgs.legacyPackages.${system} // {inherit (nixpkgs) outPath sourceInfo;};
+
+  # The helper library (see ./lib) for `system`.
+  libFor = system:
+    import ./lib {
+      inherit inputs system;
+      nixpkgs = npkgsFor system;
+    };
 
   # The cell block layout: <cell>.<block> = path to the block's .nix file/dir.
   blocks = {
@@ -70,14 +72,11 @@ The `system` attribute injected onto each cell mirrors paisano's de-systemized
       // {
         nixpkgs = npkgsFor system;
         self = inputs.self.sourceInfo // {rev = inputs.self.sourceInfo.rev or "not-a-commit";};
-        stdlib = import ./stdlib.nix {
-          inherit inputs system;
-          nixpkgs = npkgsFor system;
-        };
+        lib = libFor system;
         cells = injectedCells;
       };
 
-    # `inputs.cells` carries the de-systemized `.system` marker per cell.
+    # `inputs.cells` carries the `.system` marker per cell.
     injectedCells = lib.mapAttrs (_: cellBlocks: cellBlocks // {inherit system;}) loaded;
 
     loadBlock = cellName: path: let
@@ -98,4 +97,5 @@ The `system` attribute injected onto each cell mirrors paisano's de-systemized
 in {
   inherit systems;
   cells = lib.genAttrs systems loadFor;
+  lib = lib.genAttrs systems libFor;
 }

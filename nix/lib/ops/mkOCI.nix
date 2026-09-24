@@ -59,7 +59,7 @@ in
 
     image =
       l.throwIf (args ? tag && meta ? tags)
-      "mkOCI/mkStandardOCI/mkDevOCI: use of `tag` and `meta.tags` arguments are not supported together. Remove the former."
+      "mkOCI/mkOperableOCI: use of `tag` and `meta.tags` arguments are not supported together. Remove the former."
       nix2container.buildImage (
         l.recursiveUpdate options {
           inherit name tag;

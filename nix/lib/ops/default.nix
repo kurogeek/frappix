@@ -10,7 +10,7 @@
     mkUser = import ./mkUser.nix {inherit nixpkgs ops;};
     mkOperable = import ./mkOperable.nix {inherit nixpkgs ops;};
     mkOCI = import ./mkOCI.nix {inherit nixpkgs ops nix2container;};
-    mkStandardOCI = import ./mkStandardOCI.nix {inherit nixpkgs ops dmerge nix2container;};
+    mkOperableOCI = import ./mkOperableOCI.nix {inherit nixpkgs ops dmerge nix2container;};
   };
 in
   ops

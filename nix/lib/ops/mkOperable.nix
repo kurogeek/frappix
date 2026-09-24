@@ -46,7 +46,7 @@ in
 
     # Configure debug environment
     banner = nixpkgs.runCommand "debug-banner" {} ''
-      ${nixpkgs.figlet}/bin/figlet -f banner "STD Debug" > $out
+      ${nixpkgs.figlet}/bin/figlet -f banner "Debug" > $out
     '';
     debug = ops.writeScript {
       inherit runtimeEnv runtimeShell;

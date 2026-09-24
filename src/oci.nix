@@ -9,7 +9,7 @@
       # load our custom `pkgs`
       _module.args = {
         inherit (pkgs) frappix;
-        inherit (inputs.stdlib) ops;
+        inherit (inputs.lib) ops;
       };
       _file = ./oci.nix;
       imports = map (m: lib.modules.setDefaultModuleLocation m m) [

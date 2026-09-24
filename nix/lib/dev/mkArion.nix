@@ -1,20 +1,14 @@
 { nixpkgs, arion }: let inherit (nixpkgs) lib; in
   let
     disabledNotice = ''
-      divnix/std disabled arion's nixos instrumentation.
-
-      Standard being the horizontal integration layer it would be a layer violation
-      to delegate integration to a commissioned tool.
-
-      Doing this would reduce the mental clarity of std since a foreign integration
-      pattern would have to be supported.
+      arion's nixos instrumentation is disabled here.
 
       If you want to create a container that uses NixOS + systemd as its init-system,
       please find out how it's done here:
         ${arion}/src/nix/service/nixos-init.nix
 
-      You can then use the normal container block type to create your image and
-      pass it to your arion configuration.
+      Build the image with the oci tooling of this repository and pass it to your
+      arion configuration.
     '';
 
     disableNixosModule = {

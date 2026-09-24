@@ -12,7 +12,7 @@
           type = types.listOf types.attrs;
           default = [];
           apply = x: l.catAttrs "__passthru" x;
-          description = "List of `std` Nixago pebbles to load";
+          description = "List of Nixago pebbles (see `mkNixago`) to load";
         };
 
         config = let

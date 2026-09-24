@@ -1,5 +1,5 @@
 let
-  inherit (inputs.stdlib) dev;
+  inherit (inputs.lib) dev;
   inherit (inputs.cells.src) oci-images;
 
   # // {

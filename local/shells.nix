@@ -5,7 +5,7 @@ They conveniently also generate config files in their startup hook.
 */
 let
   inherit (cell) config;
-  inherit (inputs.stdlib) dev cfg;
+  inherit (inputs.lib) dev cfg;
   pkgs = import inputs.nixpkgs {
     inherit (inputs.nixpkgs) system;
     overlays = [
@@ -19,8 +19,7 @@ in {
       name = "Frappix Shell";
 
       # Tool Homepage: https://nix-community.github.io/nixago/
-      # This is Standard's devshell integration.
-      # It runs the startup hook when entering the shell.
+      # Generates the repository dotfiles from the startup hook when entering the shell.
       nixago = [
         (dev.mkNixago cfg.conform)
         (dev.mkNixago cfg.treefmt config.treefmt)

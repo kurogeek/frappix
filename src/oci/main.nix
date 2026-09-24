@@ -153,7 +153,7 @@ in {
           esac
         '';
     };
-    image = ops.mkStandardOCI {
+    image = ops.mkOperableOCI {
       meta = {
         description = "Frappix OCI image";
       };
