@@ -1,13 +1,13 @@
 # Run Tests
 
 ```console
-std //src/tests/tests:run
+nix build .#nixosTests.x86_64-linux.nixos-tests
 ```
 
 # Spin up Test VM (long running & preserving state)
 
 ```console
-std //tests/nixos-tests/nixos-tests:run-vm+
+nix run .#nixosTests.x86_64-linux.nixos-tests.driverInteractive
 >>> start_all()
 ```
 

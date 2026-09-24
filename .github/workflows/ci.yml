@@ -24,9 +24,9 @@ jobs:
       # Evaluate the whole flake schema (fast, catches wiring regressions).
       - name: Evaluate flake
         run: nix flake show --all-systems
-      # Build the frx CLI (primary package output).
-      - name: Build frx
-        run: nix build .#packages.x86_64-linux.frx
+      # Build the tools of the frappix package set used by the weekly job.
+      - name: Build nvchecker-nix
+        run: nix build .#nvchecker-nix
       # Make sure the dev shells still evaluate/activate.
       - name: Evaluate dev shells
         run: |

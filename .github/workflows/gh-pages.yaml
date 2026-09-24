@@ -36,7 +36,7 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Build with MDBook from Book Shell
-        run: nix develop .\#x86_64-linux.local.shells.book -c mdbook build ./.
+        run: nix develop .#book -c mdbook build ./.
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

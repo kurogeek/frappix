@@ -20,13 +20,18 @@ confirm() {
 
 
 dependencies_ok() {
+    local ok=0
     if ! command -v nix >/dev/null 2>&1; then
-        return 1
+        echo "Missing dependency: nix" >&2
+        echo "  install it, e.g. via https://github.com/DeterminateSystems/nix-installer" >&2
+        ok=1
     fi
     if ! command -v direnv >/dev/null 2>&1; then
-        return 1
+        echo "Missing dependency: direnv" >&2
+        echo "  install it and hook it into your shell, see https://direnv.net/docs/installation.html" >&2
+        ok=1
     fi
-    return 0
+    return $ok
 }
 
 show_help() {
@@ -54,18 +59,9 @@ fi
 template="$1"
 project_name="$2"
 
-if ! dependencies_ok && confirm "Install missing system level dependencies?"; then
-    export OWNER=blaggacao
-    export REPO=frappix
-    export PACKAGE=frx
-
-    tmp_file=$(mktemp)
-    curl -L https://raw.githubusercontent.com/paisano-nix/onboarding/main/install -o "$tmp_file"
-    bash "$tmp_file" "bash <(curl -L https://blaggacao.github.io/frappix/install) $*"
-    rm "$tmp_file"
-
-    unset OWNER REPO PACKAGE
-    exit 0
+if ! dependencies_ok; then
+    echo "Please install the missing system level dependencies and rerun this script." >&2
+    exit 1
 fi
 
 if confirm "Create a new project '$project_name' using template '$template'?"; then
@@ -113,7 +109,7 @@ fi
 if confirm "Create a new site?"; then
     (
         cd "$project_name" && 
-        direnv exec . frx //tools/tasks/new-site:run
+        direnv exec . nix run .#new-site
     ) || { echo "Error: Failed to create new site."; exit 1; }
     site_created=y
 else
@@ -123,7 +119,7 @@ fi
 if [ -n "$site_created" ] && confirm "Start the server?"; then
     (
         cd "$project_name" && 
-        direnv exec . frx //tools/tasks/run-env:run
+        direnv exec . nix run .#run-env
     ) || { echo "Error: Failed to start the server."; exit 1; }
 else
     echo "Skipping server startup."

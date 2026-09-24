@@ -28,14 +28,23 @@ This script does two things:
 
 ## System dependencies
 
-If not already present on your system, this script will ensure the minimal dependencies are installed:
+The script requires the following tools to be present on your system and
+points you to their installation instructions otherwise:
 
 - Nix: _global package manager & language interpreter_
 - Direnv: _tool to manage environments per folder_
-- Nom: _nix output monitor for for better display_
-- Frappix Tool: _runs repository tasks_
 
-You can inspect the bill of material of this install script in [its source](https://github.com/paisano-nix/onboarding/blob/main/install).
+## Repository tasks
+
+Tasks such as creating a site or launching the environment are regular flake
+apps of your project and run from within its direnv environment:
+
+```console
+nix run .#new-site
+nix run .#run-env
+```
+
+For an overview run `nix flake show`.
 
 ## Guided Install
 

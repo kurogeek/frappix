@@ -31,8 +31,6 @@ in rec {
 
 **Build the VM with:**
 
-TODO: incorporate into `frx` more elegantly
-
 `nix build .\#nixosConfigurations.deploy-test-HOST.config.system.build.vm`
 
 **Run the VM in headless mode:**
