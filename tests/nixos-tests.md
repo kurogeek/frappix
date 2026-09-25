@@ -1,7 +1,8 @@
 # Run Tests
 
 ```console
-std //src/tests/tests:run
+std //tests/nixos-tests/nixos-tests:run       # frappe v15, incl. the frappe unit test suite
+std //tests/nixos-tests/nixos-tests-v16:run   # frappe v16 + erpnext v16 smoke test
 ```
 
 # Spin up Test VM (long running & preserving state)
