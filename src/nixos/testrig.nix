@@ -58,23 +58,19 @@ in
         };
       };
       security.acme.acceptTerms = mkTestOverride false;
-      # setup a complete bench environment at the system level
-      environment = {
-        etc."${cfg.project}/admin-password".text = "admin";
-        extraInit = ''
-          # when the testing backdoor service enters the environment, the frappe systemd services
-          # havn't emplaced this folders yet so we create it manually for the linking below
-          mkdir -p ${cfg.benchDirectory}/sites
-          # required also outside the systemd chroot for test runner command to discover assets via the file system
-          ln -sf ${cfg.combinedAssets}/share/sites/assets   ${cfg.benchDirectory}/sites
-          # required also outside the systemd chroot for test runner command to discover apps that are set-up in this environment
-          ln -sf ${cfg.combinedAssets}/share/sites/apps.txt ${cfg.benchDirectory}/sites/apps.txt
-          # required also outside the systemd chroot for test runner command to discover apps sources
-          ln -sf ${cfg.combinedAssets}/share/apps           ${cfg.benchDirectory}
-        '';
-      };
+      environment.etc."${cfg.project}/admin-password".text = "admin";
       security.pki.certificateFiles = [ca];
-      systemd.tmpfiles.rules = ["d ${sslPath} 744 ${config.services.nginx.user} ${config.services.nginx.group}"];
+      systemd.tmpfiles.rules = [
+        "d ${sslPath} 744 ${config.services.nginx.user} ${config.services.nginx.group}"
+        # bench commands run from the test shell (e.g. the test runner) discover apps
+        # and assets via the file system, outside the frappe units' mount namespaces.
+        # Emplace the links before any unit turns these paths into (empty) bind mount
+        # points; the units' BindReadOnlyPaths resolve through the links unharmed.
+        "d  ${cfg.benchDirectory}/sites 0755 ${cfg.project} ${cfg.project} -"
+        "L+ ${cfg.benchDirectory}/sites/assets   - - - - ${cfg.combinedAssets}/share/sites/assets"
+        "L+ ${cfg.benchDirectory}/sites/apps.txt - - - - ${cfg.combinedAssets}/share/sites/apps.txt"
+        "L+ ${cfg.benchDirectory}/apps           - - - - ${cfg.combinedAssets}/share/apps"
+      ];
       services.getty.autologinUser = "root";
       users.users.root.password = "root";
       security.sudo = {
