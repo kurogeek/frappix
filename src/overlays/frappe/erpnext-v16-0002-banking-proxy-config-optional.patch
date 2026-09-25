@@ -1,0 +1,26 @@
+`banking/vite.config.ts` imports `proxyOptions.ts`, which reads the bench's
+`sites/common_site_config.json` at import time to configure the dev-server proxy.
+That file does not exist in a nix build, so make it optional.
+
+diff --git a/banking/proxyOptions.ts b/banking/proxyOptions.ts
+--- a/banking/proxyOptions.ts
++++ b/banking/proxyOptions.ts
+@@ -1,9 +1,14 @@
+ import { readFileSync } from 'node:fs';
+ 
+-const common_site_config = JSON.parse(
+-	readFileSync(new URL('../../../sites/common_site_config.json', import.meta.url), 'utf8')
+-) as { webserver_port: string | number };
+-const { webserver_port } = common_site_config;
++// only relevant for the dev server; the bench layout is absent in a nix build
++let webserver_port: string | number = 8000;
++try {
++	({ webserver_port } = JSON.parse(
++		readFileSync(new URL('../../../sites/common_site_config.json', import.meta.url), 'utf8')
++	) as { webserver_port: string | number });
++} catch {
++	// fall back to the default port
++}
+ 
+ export default {
+ 	'^/(app|api|assets|files|private)': {

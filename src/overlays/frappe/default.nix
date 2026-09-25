@@ -11,6 +11,9 @@ in {
     frappe = callPackage ./frappe.nix {};
     erpnext = callPackage ./erpnext.nix {};
 
+    frappe-v16 = callPackage ./frappe-v16.nix {};
+    erpnext-v16 = callPackage ./erpnext-v16.nix {frappe = scope.frappe-v16;};
+
     builder = callPackage ./builder.nix {};
     ecommerce-integrations = callPackage ./ecommerce-integrations.nix {};
     gameplan = callPackage ./gameplan {};
