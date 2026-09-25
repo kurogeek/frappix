@@ -1,0 +1,20 @@
+diff --git a/frappe/database/mariadb/setup_db.py b/frappe/database/mariadb/setup_db.py
+--- a/frappe/database/mariadb/setup_db.py
++++ b/frappe/database/mariadb/setup_db.py
+@@ -123,14 +123,11 @@
+ 
+ def get_root_connection():
+ 	if not frappe.local.flags.root_connection:
+-		from getpass import getpass
++		from getpass import getpass, getuser
+ 
+ 		if not frappe.flags.root_login:
+ 			frappe.flags.root_login = (
+-				frappe.conf.get("mariadb_root_login")
+-				or frappe.conf.get("root_login")
+-				or (sys.__stdin__.isatty() and input("Enter mysql super user [root]: "))
+-				or "root"
++				frappe.conf.get("mariadb_root_login") or frappe.conf.get("root_login") or getuser()
+ 			)
+ 
+ 		if not frappe.flags.root_password:
