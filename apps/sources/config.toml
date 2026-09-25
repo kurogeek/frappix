@@ -10,6 +10,7 @@ github = "frappe/bench"
 [frappe]
 source = "github"
 use_max_tag = true
+include_regex = 'v15\..*'
 github = "frappe/frappe"
 
 [frappe.passthru]
@@ -24,9 +25,29 @@ fetch = [
 ]
 
 url = "https://github.com/frappe/frappe"
+
+[frappe-v16]
+source = "github"
+use_max_tag = true
+include_regex = 'v16\..*'
+github = "frappe/frappe"
+
+[frappe-v16.passthru]
+[frappe-v16.passthru.clone]
+since = "version-15"
+[frappe-v16.passthru.clone.upstream]
+fetch = [
+  "+refs/heads/develop:refs/remotes/upstream/develop",
+  "+refs/heads/version-16:refs/remotes/upstream/version-16",
+  "+refs/heads/version-16-hotfix:refs/remotes/upstream/version-16-hotfix",
+  "+refs/tags/v16.*:refs/remotes/upstream/tags/v16.*",
+]
+
+url = "https://github.com/frappe/frappe"
 [erpnext]
 source = "github"
 use_max_tag = true
+include_regex = 'v15\..*'
 github = "frappe/erpnext"
 
 [erpnext.passthru]
@@ -37,6 +58,22 @@ Pull: +refs/heads/develop:refs/remotes/upstream/develop
 Pull: +refs/heads/version-15:refs/remotes/upstream/version-15
 Pull: +refs/heads/version-15-hotfix:refs/remotes/upstream/version-15-hotfix
 Pull: +refs/tags/v15.*:refs/remotes/upstream/tags/v15.*
+"""
+
+[erpnext-v16]
+source = "github"
+use_max_tag = true
+include_regex = 'v16\..*'
+github = "frappe/erpnext"
+
+[erpnext-v16.passthru]
+since = "version-15"
+upstream = """
+URL: https://github.com/frappe/erpnext
+Pull: +refs/heads/develop:refs/remotes/upstream/develop
+Pull: +refs/heads/version-16:refs/remotes/upstream/version-16
+Pull: +refs/heads/version-16-hotfix:refs/remotes/upstream/version-16-hotfix
+Pull: +refs/tags/v16.*:refs/remotes/upstream/tags/v16.*
 """
 
 [insights]
